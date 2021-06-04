@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"math"
+	"os"
 	"reflect"
 	"strconv"
 )
@@ -43,7 +45,14 @@ func main() {
 	c := make([]int, n)
 	s := make([]int, m_size)
 	s0 := make([]int, m_size)
-	count := 0
+	//count := 0
+	out_fl, e2 := os.Create("output.txt")
+	if e2 != nil {
+		fmt.Println(os.Stderr, e2)
+		os.Exit(1)
+	}
+	defer out_fl.Close()
+	writer := bufio.NewWriter(out_fl)
 	for i := 0; i < code_size; i++ {
 		tmp = 0
 		i_n = i
@@ -67,8 +76,13 @@ func main() {
 		}
 		//fmt.Printf("%d | syndrome is %d\n", i, s)
 		if reflect.DeepEqual(s, s0) {
-			fmt.Printf("%d code is %d\n", count, c)
-			count++
+			//fmt.Printf("%d code is %d\n", count, c)
+			//count++
+			if _, e3 := fmt.Fprintln(writer, c); e3 != nil {
+				fmt.Println(os.Stderr, e3)
+				os.Exit(1)
+			}
 		}
 	} //*/
+	writer.Flush()
 }
