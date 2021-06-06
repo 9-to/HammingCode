@@ -59,12 +59,12 @@ func main() {
 		row = 0
 		s = make([]int, m_size)
 		for i := 0; i < n; i++ {
-			c[i] = "0"
+			c[i] = "0 "
 		}
 		for i_n != 0 { //符号語Cを作る
 			tmp = i_n % 2
 			i_n /= 2
-			c[row] = strconv.Itoa(tmp)
+			c[row] = strconv.Itoa(tmp) + " "
 			row++
 		}
 		//fmt.Printf("%d | code is %s\n", i, c)
@@ -82,7 +82,8 @@ func main() {
 		//fmt.Printf("%d | syndrome is %d\n", i, s)
 		if reflect.DeepEqual(s, s0) {
 			str := strings.Join(c, "")
-			if _, e3 := fmt.Fprintln(writer, str); e3 != nil {
+			str2 := strings.TrimSpace(str)
+			if _, e3 := fmt.Fprintln(writer, str2); e3 != nil {
 				panic(e3)
 			}
 		}
