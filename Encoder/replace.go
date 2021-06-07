@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func main() {
+func replace() {
 	fp, e1 := os.Open("output.txt")
 	if e1 != nil {
 		panic(e1)

@@ -43,16 +43,27 @@ func main() {
 	}
 	fmt.Println("----------------------------")
 	code_size := int(math.Pow(2, float64(n)))
-	c := make([]string, n)
-	s := make([]int, m_size)
+	c := make([]string, n)   //符号語
+	s := make([]int, m_size) //シンドローム
 	C := 0
-	s0 := make([]int, m_size)
+	s0 := make([]int, m_size) //比較用 [0,0,...]が収納されている
+	counter := 0
 	out_fl, e2 := os.Create("output.txt")
 	if e2 != nil {
 		panic(e2)
 	}
 	defer out_fl.Close()
 	writer := bufio.NewWriter(out_fl)
+
+	header := "label "
+	for i := 0; i < n; i++ {
+		header = header + "c_" + strconv.Itoa(i) + " "
+	}
+	header2 := strings.TrimSpace(header)
+	if _, err := fmt.Fprintln(writer, header2); err != nil {
+		panic(err)
+	}
+
 	for i := 0; i < code_size; i++ {
 		tmp = 0
 		i_n = i
@@ -70,23 +81,28 @@ func main() {
 		//fmt.Printf("%d | code is %s\n", i, c)
 		for i := 0; i < m_size; i++ { //シンドロームsをHc^t=sより作成
 			for j := 0; j < n; j++ {
-				C, _ = strconv.Atoi(c[j])
+				str3 := strings.TrimSpace(c[j])
+				C, _ = strconv.Atoi(str3)
 				s[i] += H[i][j] * C
 			}
 			s[i] %= 2
-			if s[i] != 0 {
+			/*if s[i] != 0 {
 				continue
-			}
-			//S[i] = strconv.Itoa(s[i])
+			}*/
 		}
 		//fmt.Printf("%d | syndrome is %d\n", i, s)
-		if reflect.DeepEqual(s, s0) {
-			str := strings.Join(c, "")
-			str2 := strings.TrimSpace(str)
-			if _, e3 := fmt.Fprintln(writer, str2); e3 != nil {
-				panic(e3)
-			}
+		str := strings.Join(c, "")
+		if reflect.DeepEqual(s, s0) { //HammingCodeのラベルは0、それ以外は1
+			str = "0 " + str
+			counter++
+		} else {
+			str = "1 " + str
+		}
+		str2 := strings.TrimSpace(str)
+		if _, e3 := fmt.Fprintln(writer, str2); e3 != nil {
+			panic(e3)
 		}
 	} //*/
+	fmt.Printf("code_size is %d\n", counter)
 	writer.Flush()
 }
